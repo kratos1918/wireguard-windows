@@ -51,7 +51,8 @@ if exist .deps\prepared goto :build
 
 :download
 	echo [+] Downloading %1
-	curl --proxy %https_proxy% -#fLo %1 %2 || exit /b 1
+	if "%https_proxy%"==""	(curl -#fLo %1 %2 || exit /b 1) else (curl --proxy %https_proxy% -#fLo %1 %2 || exit /b 1)
+	
 	echo [+] Verifying %1
 	for /f %%a in ('CertUtil -hashfile %1 SHA256 ^| findstr /r "^[0-9a-f]*$"') do if not "%%a"=="%~3" exit /b 1
 	goto :eof
